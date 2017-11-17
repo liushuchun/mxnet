@@ -27,6 +27,7 @@ from mxnet.initializer import Uniform
 from mxnet.module.base_module import BaseModule
 from mxnet.module.module import Module
 
+
 class MutableModule(BaseModule):
     """A mutable module is a module that supports variable input data.
 
@@ -42,6 +43,7 @@ class MutableModule(BaseModule):
     max_label_shapes : list of (name, shape) tuple, designating inputs whose shape vary
     fixed_param_prefix : list of str, indicating fixed parameters
     """
+
     def __init__(self, symbol, data_names, label_names,
                  logger=logging, context=ctx.cpu(), work_load_list=None,
                  max_data_shapes=None, max_label_shapes=None, fixed_param_prefix=None):
@@ -157,7 +159,6 @@ class MutableModule(BaseModule):
         module.bind(max_data_shapes, max_label_shapes, for_training, inputs_need_grad,
                     force_rebind=False, shared_module=None)
         self._curr_module = module
-
         # copy back saved params, if already initialized
         if self.params_initialized:
             self.set_params(arg_params, aux_params)
@@ -180,6 +181,7 @@ class MutableModule(BaseModule):
         if self._curr_module.label_shapes is not None:
             current_shapes = dict(self._curr_module.data_shapes + self._curr_module.label_shapes)
         else:
+
             current_shapes = dict(self._curr_module.data_shapes)
 
         # get input_shapes
@@ -193,7 +195,7 @@ class MutableModule(BaseModule):
         for k, v in current_shapes.items():
             if v != input_shapes[k]:
                 shape_changed = True
-
+        #shape changed 重新bind
         if shape_changed:
             module = Module(self._symbol, self._data_names, self._label_names,
                             logger=self.logger, context=self._context,
